@@ -188,16 +188,16 @@ struct SqueezeWidget : SubmitModuleWidget {
     }
 
     void appendContextMenu(Menu* menu) override {
-        menu->addChild(new MenuSeparator);
-        menu->addChild(createMenuItem("Manual", "", []() {
-            system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/squeeze/");
-        }));
-        menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-            system::openBrowser(SUBMIT_URL);
-        }));
-        menu->addChild(createMenuItem("Report a Bug", "", []() {
-            system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
-        }));
+        // menu->addChild(new MenuSeparator);
+        // menu->addChild(createMenuItem("Manual", "", []() {
+        //     system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/squeeze/");
+        // }));
+        // menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+        //     system::openBrowser(SUBMIT_URL);
+        // }));
+        // menu->addChild(createMenuItem("Report a Bug", "", []() {
+        //     system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
+        // }));
 		SubmitModuleWidget::appendContextMenu(menu);
     }
 };

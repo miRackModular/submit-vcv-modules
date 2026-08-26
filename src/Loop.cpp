@@ -529,27 +529,27 @@ struct Reel : Module {
         }
     }
 
-    void onAdd(const AddEvent& e) override {
-        Module::onAdd(e);
-        const std::string storageDir = getPatchStorageDirectory();
-        if (storageDir.empty())
-            return;
+    // void onAdd(const AddEvent& e) override {
+    //     Module::onAdd(e);
+    //     const std::string storageDir = getPatchStorageDirectory();
+    //     if (storageDir.empty())
+    //         return;
 
-        const std::string embeddedPath = system::join(storageDir, "sample.wav");
-        if (system::isFile(embeddedPath))
-            loadSample(embeddedPath, false, fileName);
-    }
+    //     const std::string embeddedPath = system::join(storageDir, "sample.wav");
+    //     if (system::isFile(embeddedPath))
+    //         loadSample(embeddedPath, false, fileName);
+    // }
 
-    void onSave(const SaveEvent& e) override {
-        Module::onSave(e);
-        if (!fileLoaded || loadedSamplePath.empty() || !system::isFile(loadedSamplePath))
-            return;
+    // void onSave(const SaveEvent& e) override {
+    //     Module::onSave(e);
+    //     if (!fileLoaded || loadedSamplePath.empty() || !system::isFile(loadedSamplePath))
+    //         return;
 
-        const std::string storageDir = createPatchStorageDirectory();
-        const std::string embeddedPath = system::join(storageDir, "sample.wav");
-        if (loadedSamplePath != embeddedPath)
-            system::copy(loadedSamplePath, embeddedPath);
-    }
+    //     const std::string storageDir = createPatchStorageDirectory();
+    //     const std::string embeddedPath = system::join(storageDir, "sample.wav");
+    //     if (loadedSamplePath != embeddedPath)
+    //         system::copy(loadedSamplePath, embeddedPath);
+    // }
 };
 
 struct Drift13KnobSmall : SvgKnob {
@@ -576,9 +576,9 @@ struct LoopPlayButton : LoopTransportButton {
         // Show the requested transport state, including gate input requests.
         if (module) {
             const int frame = module->lights[Reel::PLAY_LIGHT].getBrightness() > 0.5f ? 1 : 0;
-            if (sw->svg != frames[frame]) {
+            if (sw->svg.svg != frames[frame]) {
                 sw->setSvg(frames[frame]);
-                fb->setDirty();
+                // fb->setDirty();
             }
         }
     }
@@ -606,8 +606,8 @@ struct ReelDisplay : Widget {
             nvgFontSize(args.vg, 9.f);
             nvgFillColor(args.vg, nvgRGB(255, 255, 255));
             nvgTextAlign(args.vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-            nvgText(args.vg, box.size.x/2, box.size.y/2 - 6, "drop WAV file", nullptr);
-            nvgText(args.vg, box.size.x/2, box.size.y/2 + 6, "or right-click", nullptr);
+            nvgText(args.vg, box.size.x/2, box.size.y/2 - 6, "load WAV file", nullptr);
+            nvgText(args.vg, box.size.x/2, box.size.y/2 + 6, "via module menu", nullptr);
             return;
         }
 
@@ -735,12 +735,12 @@ struct ReelWidget : SubmitModuleWidget {
                 [=]() { module->setClockPpqn(4); }));
             menu->addChild(new MenuSeparator);
         }
-        menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-            system::openBrowser(SUBMIT_URL);
-        }));
-        menu->addChild(createMenuItem("Manual", "", []() {
-            system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/loop/");
-        }));
+        // menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+        //     system::openBrowser(SUBMIT_URL);
+        // }));
+        // menu->addChild(createMenuItem("Manual", "", []() {
+        //     system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/loop/");
+        // }));
         menu->addChild(createMenuItem("Load WAV...", "", [=]() {
             char* pathC = osdialog_file(OSDIALOG_OPEN, NULL, NULL, NULL);
             if (pathC) {

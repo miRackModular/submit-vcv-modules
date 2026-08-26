@@ -122,20 +122,20 @@ struct Circles : Module {
 		SCALE_D_SELECT_RED_LIGHT,
 		DICE_LIGHT,
 		STEP_1_ENABLE_LIGHT,
-		STEP_2_ENABLE_LIGHT,
-		STEP_3_ENABLE_LIGHT,
-		STEP_4_ENABLE_LIGHT,
-		STEP_5_ENABLE_LIGHT,
-		STEP_6_ENABLE_LIGHT,
-		STEP_7_ENABLE_LIGHT,
-		STEP_8_ENABLE_LIGHT,
 		STEP_1_ACTIVE_RED_LIGHT,
+		STEP_2_ENABLE_LIGHT,
 		STEP_2_ACTIVE_RED_LIGHT,
+		STEP_3_ENABLE_LIGHT,
 		STEP_3_ACTIVE_RED_LIGHT,
+		STEP_4_ENABLE_LIGHT,
 		STEP_4_ACTIVE_RED_LIGHT,
+		STEP_5_ENABLE_LIGHT,
 		STEP_5_ACTIVE_RED_LIGHT,
+		STEP_6_ENABLE_LIGHT,
 		STEP_6_ACTIVE_RED_LIGHT,
+		STEP_7_ENABLE_LIGHT,
 		STEP_7_ACTIVE_RED_LIGHT,
+		STEP_8_ENABLE_LIGHT,
 		STEP_8_ACTIVE_RED_LIGHT,
 		LIGHTS_LEN
 	};
@@ -703,27 +703,27 @@ struct Circles : Module {
 	}
 
 	void pushPendingDiceHistory() {
-		if (!diceHistoryReady.exchange(false, std::memory_order_acq_rel))
-			return;
+		// if (!diceHistoryReady.exchange(false, std::memory_order_acq_rel))
+		// 	return;
 
-		auto* action = new history::ComplexAction;
-		action->name = "generate Circles melody";
-		for (int i = 0; i < 8; ++i) {
-			const float oldValue = diceHistoryOldValues[i];
-			const float newValue = diceHistoryNewValues[i];
-			if (oldValue == newValue)
-				continue;
-			auto* change = new history::ParamChange;
-			change->moduleId = id;
-			change->paramId = STEP_1_PARAM + i;
-			change->oldValue = oldValue;
-			change->newValue = newValue;
-			action->push(change);
-		}
-		if (action->isEmpty())
-			delete action;
-		else
-			APP->history->push(action);
+		// auto* action = new history::ComplexAction;
+		// action->name = "generate Circles melody";
+		// for (int i = 0; i < 8; ++i) {
+		// 	const float oldValue = diceHistoryOldValues[i];
+		// 	const float newValue = diceHistoryNewValues[i];
+		// 	if (oldValue == newValue)
+		// 		continue;
+		// 	auto* change = new history::ParamChange;
+		// 	change->moduleId = id;
+		// 	change->paramId = STEP_1_PARAM + i;
+		// 	change->oldValue = oldValue;
+		// 	change->newValue = newValue;
+		// 	action->push(change);
+		// }
+		// if (action->isEmpty())
+		// 	delete action;
+		// else
+		// 	APP->history->push(action);
 	}
 
 	int getNoteSemitones(int step, int scaleIndex) {
@@ -956,8 +956,8 @@ struct Circles : Module {
 			lights[STEP_1_R_LIGHT + i * 3].setBrightness(active ? 1.f : (accent && enabled ? 0.15f : 0.03f));
 			lights[STEP_1_G_LIGHT + i * 3].setBrightness(active && enabled ? 0.85f : (enabled ? 0.12f : 0.f));
 			lights[STEP_1_B_LIGHT + i * 3].setBrightness(active ? 0.18f : 0.f);
-			lights[STEP_1_ENABLE_LIGHT + i].setBrightness(enabled && !active ? 0.9f : 0.f);
-			lights[STEP_1_ACTIVE_RED_LIGHT + i].setBrightness(active ? 1.f : 0.f);
+			lights[STEP_1_ENABLE_LIGHT + i * 2].setBrightness(enabled && !active ? 0.9f : 0.f);
+			lights[STEP_1_ACTIVE_RED_LIGHT + i * 2].setBrightness(active ? 1.f : 0.f);
 		}
 	}
 };
@@ -969,7 +969,7 @@ constexpr std::array<Circles::Scale, 8> Circles::scales;
 struct CirclesDisplay : TransparentWidget {
 	Circles* module = nullptr;
 	std::shared_ptr<Font> font;
-	std::shared_ptr<Svg> lcdRingSvg;
+	std::shared_ptr<DynamicSvg> lcdRingSvg;
 	NSVGshape* lcdRingShape = nullptr;
 	std::vector<NSVGpath*> lcdLedPaths;
 	std::array<float, Circles::PARAMS_LEN> observedParams{};
@@ -1087,7 +1087,7 @@ struct CirclesDisplay : TransparentWidget {
 
 		// This SVG must be unique per widget because its NanoSVG path list is
 		// temporarily isolated below while the individual LEDs are drawn.
-		lcdRingSvg = std::make_shared<Svg>();
+		lcdRingSvg = std::make_shared<DynamicSvg>();
 		lcdRingSvg->loadFile(asset::plugin(pluginInstance, "res/CirclesComponents.svg"));
 		if (!lcdRingSvg->handle)
 			return;
@@ -1376,8 +1376,7 @@ struct CirclesWidget : SubmitModuleWidget {
 		for (int i = 0; i < 8; ++i) {
 			addParam(createParamCentered<CirclesKnob>(notePositions[i], module, Circles::STEP_1_PARAM + i));
 			addParam(createParamCentered<LEDButton>(enablePositions[i], module, Circles::STEP_1_ENABLE_PARAM + i));
-			addChild(createLightCentered<MediumLight<YellowLight>>(enablePositions[i], module, Circles::STEP_1_ENABLE_LIGHT + i));
-			addChild(createLightCentered<MediumLight<RedLight>>(enablePositions[i], module, Circles::STEP_1_ACTIVE_RED_LIGHT + i));
+			addChild(createLightCentered<MediumLight<YellowRedLight>>(enablePositions[i], module, Circles::STEP_1_ENABLE_LIGHT + i * 2));
 			addInput(createInputCentered<PJ301MPort>(cvPositions[i], module, Circles::STEP_1_CV_INPUT + i));
 		}
 

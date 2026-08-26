@@ -143,7 +143,6 @@ struct Flip : Module {
 	}
 
 	void onReset(const ResetEvent& e) override {
-		Module::onReset(e);
 		engine.reset();
 		freezeEngine.reset();
 		clockTrigger.reset();
@@ -353,18 +352,18 @@ struct FlipWidget : SubmitModuleWidget {
 		setModule(module);
 		auto* panel = createPanel(asset::plugin(pluginInstance, "res/Flip.svg"));
 		setPanel(panel);
-		panel->panelBorder->hide();
+		// panel->panelBorder->hide();
 
 		// Het Illustrator-paneel heeft exact dezelfde ontwerpmaat als Sync:
 		// 68.346 x 380. Het blijft 1:1 en staat gecentreerd in een 5HP-module.
-		box.size.x = 75.f;
-		panel->box.pos.x = 3.327f;
-		auto* background = createWidget<FlipPanelBackground>(Vec(0.f, 0.f));
-		background->box.size = Vec(75.f, RACK_GRID_HEIGHT);
-		addChildBottom(background);
-		auto* border = createWidget<FlipPanelBorder>(Vec(0.f, 0.f));
-		border->box.size = Vec(75.f, RACK_GRID_HEIGHT);
-		addChild(border);
+		// box.size.x = 75.f;
+		// panel->box.pos.x = 3.327f;
+		// auto* background = createWidget<FlipPanelBackground>(Vec(0.f, 0.f));
+		// background->box.size = Vec(75.f, RACK_GRID_HEIGHT);
+		// addChildBottom(background);
+		// auto* border = createWidget<FlipPanelBorder>(Vec(0.f, 0.f));
+		// border->box.size = Vec(75.f, RACK_GRID_HEIGHT);
+		// addChild(border);
 
 		// Exacte posities uit Panel-design-Flip-componenets.svg, met alleen
 		// de 3.327 px horizontale centreerruimte van het 5HP-frame erbij.
@@ -400,17 +399,17 @@ struct FlipWidget : SubmitModuleWidget {
 			menu->addChild(createCheckMenuItem("4 PPQN (compatibility)", "",
 				[=]() { return flip->clockPpqn == 4; },
 				[=]() { flip->setClockPpqn(4); }));
-			menu->addChild(new MenuSeparator);
+			// menu->addChild(new MenuSeparator);
 		}
-		menu->addChild(createMenuItem("Manual", "", []() {
-			system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/flip/");
-		}));
-		menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-			system::openBrowser(SUBMIT_URL);
-		}));
-		menu->addChild(createMenuItem("Report a Bug", "", []() {
-			system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
-		}));
+		// menu->addChild(createMenuItem("Manual", "", []() {
+		// 	system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/flip/");
+		// }));
+		// menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+		// 	system::openBrowser(SUBMIT_URL);
+		// }));
+		// menu->addChild(createMenuItem("Report a Bug", "", []() {
+		// 	system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
+		// }));
 		SubmitModuleWidget::appendContextMenu(menu);
 	}
 

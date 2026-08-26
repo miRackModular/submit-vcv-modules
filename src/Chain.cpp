@@ -128,7 +128,7 @@ struct Mix2ch : Module {
     }
 
     void onReset(const ResetEvent& e) override {
-        Module::onReset(e);
+        // Module::onReset(e);
         muteCvToggle.store(false);
         muteCvInitialized = false;
     }
@@ -481,16 +481,16 @@ struct Mix2chWidget : SubmitModuleWidget {
                 [chain]() { return chain->muteCvToggle.load() ? 1 : 0; },
                 [chain](int mode) { chain->muteCvToggle.store(mode == 1); }));
         }
-        menu->addChild(new MenuSeparator);
-        menu->addChild(createMenuItem("Manual", "", []() {
-            system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/chain/");
-        }));
-        menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-            system::openBrowser(SUBMIT_URL);
-        }));
-        menu->addChild(createMenuItem("Report a Bug", "", []() {
-            system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
-        }));
+        // menu->addChild(new MenuSeparator);
+        // menu->addChild(createMenuItem("Manual", "", []() {
+        //     system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/chain/");
+        // }));
+        // menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+        //     system::openBrowser(SUBMIT_URL);
+        // }));
+        // menu->addChild(createMenuItem("Report a Bug", "", []() {
+        //     system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
+        // }));
 		SubmitModuleWidget::appendContextMenu(menu);
     }
 };
