@@ -1281,16 +1281,16 @@ struct ReactWidget : SubmitModuleWidget {
         percLabel += (percKnob == 0) ? "KIT" : std::string("Lock (") + GENRE_NAMES[percKnob % 8] + ")";
         menu->addChild(createMenuLabel(percLabel));
 
-        menu->addChild(new MenuSeparator);
-        menu->addChild(createMenuItem("Manual", "", []() {
-            system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/react/");
-        }));
-        menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-            system::openBrowser(SUBMIT_URL);
-        }));
-        menu->addChild(createMenuItem("Report a Bug", "", []() {
-            system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
-        }));
+        // menu->addChild(new MenuSeparator);
+        // menu->addChild(createMenuItem("Manual", "", []() {
+        //     system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/react/");
+        // }));
+        // menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+        //     system::openBrowser(SUBMIT_URL);
+        // }));
+        // menu->addChild(createMenuItem("Report a Bug", "", []() {
+        //     system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
+        // }));
 		SubmitModuleWidget::appendContextMenu(menu);
     }
 };

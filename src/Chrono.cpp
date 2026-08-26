@@ -791,17 +791,17 @@ struct ChronoWidget : SubmitModuleWidget {
             menu->addChild(createCheckMenuItem("Clocked Time: Extra divisions", "",
                 [=]() { return chrono->clockedTimeEnabled; },
                 [=]() { chrono->clockedTimeEnabled = !chrono->clockedTimeEnabled; }));
-            menu->addChild(new MenuSeparator);
+            // menu->addChild(new MenuSeparator);
         }
-        menu->addChild(createMenuItem("Manual", "", []() {
-            system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/chrono/");
-        }));
-        menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-            system::openBrowser(SUBMIT_URL);
-        }));
-        menu->addChild(createMenuItem("Report a Bug", "", []() {
-            system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
-        }));
+        // menu->addChild(createMenuItem("Manual", "", []() {
+        //     system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/chrono/");
+        // }));
+        // menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+        //     system::openBrowser(SUBMIT_URL);
+        // }));
+        // menu->addChild(createMenuItem("Report a Bug", "", []() {
+        //     system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
+        // }));
 		SubmitModuleWidget::appendContextMenu(menu);
     }
 };

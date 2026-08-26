@@ -307,17 +307,17 @@ struct SyncWidget : SubmitModuleWidget {
 		setModule(module);
 		auto* panel = createPanel(asset::plugin(pluginInstance, "res/Sync.svg"));
 		setPanel(panel);
-		panel->panelBorder->hide();
+		// panel->panelBorder->hide();
 		// Rack-breedte: 5HP (75 px). Het 68.346 px-paneel blijft 1:1 en
 		// wordt met 3.327 px vrije ruimte aan beide kanten gecentreerd.
-		box.size.x = 75.f;
-		panel->box.pos.x = 3.327f;
-		auto* background = createWidget<SyncPanelBackground>(Vec(0.f, 0.f));
-		background->box.size = Vec(75.f, RACK_GRID_HEIGHT);
-		addChildBottom(background);
-		auto* border = createWidget<SyncPanelBorder>(Vec(0.f, 0.f));
-		border->box.size = Vec(75.f, RACK_GRID_HEIGHT);
-		addChild(border);
+		// box.size.x = 75.f;
+		// panel->box.pos.x = 3.327f;
+		// auto* background = createWidget<SyncPanelBackground>(Vec(0.f, 0.f));
+		// background->box.size = Vec(75.f, RACK_GRID_HEIGHT);
+		// addChildBottom(background);
+		// auto* border = createWidget<SyncPanelBorder>(Vec(0.f, 0.f));
+		// border->box.size = Vec(75.f, RACK_GRID_HEIGHT);
+		// addChild(border);
 
 		// Exacte 1:1-posities uit de components-SVG, plus dezelfde 3.327 px offset.
 		auto* display = createWidget<SyncDisplay>(Vec(14.113f, 40.484f));
@@ -352,17 +352,17 @@ struct SyncWidget : SubmitModuleWidget {
 			menu->addChild(createCheckMenuItem("4 PPQN (compatibility)", "",
 				[=]() { return sync->clockPpqn == 4; },
 				[=]() { sync->setClockPpqn(4); }));
-			menu->addChild(new MenuSeparator);
+			// menu->addChild(new MenuSeparator);
 		}
-		menu->addChild(createMenuItem("Manual", "", []() {
-			system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/sync/");
-		}));
-		menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-			system::openBrowser(SUBMIT_URL);
-		}));
-		menu->addChild(createMenuItem("Report a Bug", "", []() {
-			system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
-		}));
+		// menu->addChild(createMenuItem("Manual", "", []() {
+		// 	system::openBrowser("https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/sync/");
+		// }));
+		// menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+		// 	system::openBrowser(SUBMIT_URL);
+		// }));
+		// menu->addChild(createMenuItem("Report a Bug", "", []() {
+		// 	system::openBrowser("https://github.com/submitaudio/submit-vcv-modules/issues");
+		// }));
 		SubmitModuleWidget::appendContextMenu(menu);
 	}
 };

@@ -97,6 +97,8 @@ struct TagInlineTextField : ui::TextField {
 
 	void step() override {
 		ui::TextField::step();
+		if (this != APP->event->selectedWidget)
+			return;
 		if (text.size() > Tag::MAX_CHARACTERS) {
 			text.resize(Tag::MAX_CHARACTERS);
 			cursor = std::min(cursor, static_cast<int>(text.size()));
@@ -107,53 +109,46 @@ struct TagInlineTextField : ui::TextField {
 	}
 
 	void draw(const DrawArgs& args) override {
-		(void) args;
-	}
-
-	void drawLayer(const DrawArgs& args, int layer) override {
-		if (layer == 1) {
-			if (!font)
-				font = APP->window->loadFont(asset::system("res/fonts/ShareTechMono-Regular.ttf"));
-			if (font && font->handle >= 0) {
-				nvgScissor(args.vg, 0.f, 0.f, box.size.x, box.size.y);
-				nvgFontFaceId(args.vg, font->handle);
-				nvgFontSize(args.vg, 11.f);
-				nvgTextLetterSpacing(args.vg, 0.3f);
-				nvgTextAlign(args.vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
-				const NVGcolor yellow = nvgRGB(255, 255, 0);
-				const int begin = std::min(cursor, selection);
-				const int end = std::max(cursor, selection);
-				if (this == APP->event->selectedWidget && begin != end) {
-					float beginBounds[4];
-					float endBounds[4];
-					const std::string beforeSelection = text.substr(0, begin);
-					const std::string throughSelection = text.substr(0, end);
-					const float beginX = nvgTextBounds(args.vg, 0.f, 15.f, beforeSelection.c_str(), nullptr, beginBounds);
-					const float endX = nvgTextBounds(args.vg, 0.f, 15.f, throughSelection.c_str(), nullptr, endBounds);
-					nvgBeginPath(args.vg);
-					nvgRect(args.vg, beginX, 8.f, endX - beginX, 14.f);
-					nvgFillColor(args.vg, nvgRGBA(255, 255, 255, 65));
-					nvgFill(args.vg);
-				}
-
-				nvgFillColor(args.vg, yellow);
-				nvgText(args.vg, 0.f, 15.f, text.c_str(), nullptr);
-
-				if (this == APP->event->selectedWidget) {
-					float cursorBounds[4];
-					const std::string beforeCursor = text.substr(0, cursor);
-					const float cursorX = nvgTextBounds(args.vg, 0.f, 15.f, beforeCursor.c_str(), nullptr, cursorBounds);
-					nvgBeginPath(args.vg);
-					nvgMoveTo(args.vg, cursorX, 8.f);
-					nvgLineTo(args.vg, cursorX, 22.f);
-					nvgStrokeColor(args.vg, nvgRGB(255, 255, 255));
-					nvgStrokeWidth(args.vg, 1.25f);
-					nvgStroke(args.vg);
-				}
-				nvgResetScissor(args.vg);
+		if (!font)
+			font = APP->window->loadFont(asset::system("res/fonts/ShareTechMono-Regular.ttf"));
+		if (font && font->handle >= 0) {
+			nvgScissor(args.vg, 0.f, 0.f, box.size.x, box.size.y);
+			nvgFontFaceId(args.vg, font->handle);
+			nvgFontSize(args.vg, 11.f);
+			nvgTextLetterSpacing(args.vg, 0.3f);
+			nvgTextAlign(args.vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
+			const NVGcolor yellow = nvgRGB(255, 255, 0);
+			const int begin = std::min(cursor, selection);
+			const int end = std::max(cursor, selection);
+			if (this == APP->event->selectedWidget && begin != end) {
+				float beginBounds[4];
+				float endBounds[4];
+				const std::string beforeSelection = text.substr(0, begin);
+				const std::string throughSelection = text.substr(0, end);
+				const float beginX = nvgTextBounds(args.vg, 0.f, 15.f, beforeSelection.c_str(), nullptr, beginBounds);
+				const float endX = nvgTextBounds(args.vg, 0.f, 15.f, throughSelection.c_str(), nullptr, endBounds);
+				nvgBeginPath(args.vg);
+				nvgRect(args.vg, beginX, 8.f, endX - beginX, 14.f);
+				nvgFillColor(args.vg, nvgRGBA(255, 255, 255, 65));
+				nvgFill(args.vg);
 			}
+
+			nvgFillColor(args.vg, yellow);
+			nvgText(args.vg, 0.f, 15.f, text.c_str(), nullptr);
+
+			if (this == APP->event->selectedWidget) {
+				float cursorBounds[4];
+				const std::string beforeCursor = text.substr(0, cursor);
+				const float cursorX = nvgTextBounds(args.vg, 0.f, 15.f, beforeCursor.c_str(), nullptr, cursorBounds);
+				nvgBeginPath(args.vg);
+				nvgMoveTo(args.vg, cursorX, 8.f);
+				nvgLineTo(args.vg, cursorX, 22.f);
+				nvgStrokeColor(args.vg, nvgRGB(255, 255, 255));
+				nvgStrokeWidth(args.vg, 1.25f);
+				nvgStroke(args.vg);
+			}
+			nvgResetScissor(args.vg);
 		}
-		Widget::drawLayer(args, layer);
 	}
 };
 
@@ -196,17 +191,13 @@ struct TagMouseTransform : Widget {
 		Widget::draw(transformed);
 	}
 
-	void drawLayer(const DrawArgs& args, int layer) override {
-		DrawArgs transformed = args;
-		nvgTransform(transformed.vg, transform[0], transform[1], transform[2], transform[3], transform[4], transform[5]);
-		Widget::drawLayer(transformed, layer);
-	}
-
 	void onButton(const event::Button& e) override {
 		event::Button transformed = e;
 		if (hasInverse)
 			nvgTransformPoint(&transformed.pos.x, &transformed.pos.y, inverse, e.pos.x, e.pos.y);
 		Widget::onButton(transformed);
+		if (transformed.isConsumed())
+			e.consume(transformed.getTarget());
 	}
 
 	void onHover(const event::Hover& e) override {
@@ -217,16 +208,8 @@ struct TagMouseTransform : Widget {
 				inverseLinear, e.mouseDelta.x, e.mouseDelta.y);
 		}
 		Widget::onHover(transformed);
-	}
-
-	void onDragHover(const event::DragHover& e) override {
-		event::DragHover transformed = e;
-		if (hasInverse) {
-			nvgTransformPoint(&transformed.pos.x, &transformed.pos.y, inverse, e.pos.x, e.pos.y);
-			nvgTransformPoint(&transformed.mouseDelta.x, &transformed.mouseDelta.y,
-				inverseLinear, e.mouseDelta.x, e.mouseDelta.y);
-		}
-		Widget::onDragHover(transformed);
+		if (transformed.isConsumed())
+			e.consume(transformed.getTarget());
 	}
 };
 
@@ -286,7 +269,6 @@ struct TagWidget : SubmitModuleWidget {
 		display->box.size = box.size;
 		display->module = module;
 		addChild(display);
-
 		auto* transform = createWidget<TagMouseTransform>(Vec(15.f, 86.f));
 		transform->rotate(float(M_PI) * 0.5f);
 		auto* field = createWidget<TagInlineTextField>(Vec(0.f, -15.f));
@@ -299,20 +281,25 @@ struct TagWidget : SubmitModuleWidget {
 		addChild(transform);
 	}
 
+	//XXX: miRack doesn't call Module::dataFromJson prior to module widget construction
+	void create() override {
+		getFirstDescendantOfType<TagInlineTextField>()->text = static_cast<Tag*>(module)->label;
+	}
+
 	void appendContextMenu(Menu* menu) override {
 		Tag* module = dynamic_cast<Tag*>(this->module);
-		menu->addChild(new MenuSeparator);
-		menu->addChild(createMenuLabel("Label (maximum 38 characters)"));
-		auto* field = new TagTextField;
-		field->module = module;
-		field->box.size = Vec(220.f, 28.f);
-		field->setText(module ? module->label : "");
-		menu->addChild(field);
-		menu->addChild(new MenuSeparator);
-		menu->addChild(createMenuLabel("Top arrow"));
-		menu->addChild(createCheckMenuItem("None", "", [module]() { return module && module->arrowDirection == Tag::ARROW_NONE; }, [module]() { if (module) module->arrowDirection = Tag::ARROW_NONE; }));
-		menu->addChild(createCheckMenuItem("Left", "", [module]() { return module && module->arrowDirection == Tag::ARROW_LEFT; }, [module]() { if (module) module->arrowDirection = Tag::ARROW_LEFT; }));
-		menu->addChild(createCheckMenuItem("Right", "", [module]() { return module && module->arrowDirection == Tag::ARROW_RIGHT; }, [module]() { if (module) module->arrowDirection = Tag::ARROW_RIGHT; }));
+		// menu->addChild(new MenuSeparator);
+		// menu->addChild(createMenuLabel("Label (maximum 38 characters)"));
+		// auto* field = new TagTextField;
+		// field->module = module;
+		// field->box.size = Vec(220.f, 28.f);
+		// field->setText(module ? module->label : "");
+		// menu->addChild(field);
+		// menu->addChild(new MenuSeparator);
+		// menu->addChild(createMenuLabel("Top arrow"));
+		// menu->addChild(createCheckMenuItem("None", "", [module]() { return module && module->arrowDirection == Tag::ARROW_NONE; }, [module]() { if (module) module->arrowDirection = Tag::ARROW_NONE; }));
+		// menu->addChild(createCheckMenuItem("Left", "", [module]() { return module && module->arrowDirection == Tag::ARROW_LEFT; }, [module]() { if (module) module->arrowDirection = Tag::ARROW_LEFT; }));
+		// menu->addChild(createCheckMenuItem("Right", "", [module]() { return module && module->arrowDirection == Tag::ARROW_RIGHT; }, [module]() { if (module) module->arrowDirection = Tag::ARROW_RIGHT; }));
 		appendSubmitLinks(menu, "https://www.submitaudio.nl/vcv-rack-modules-metamodule-plugins/tag/");
 		SubmitModuleWidget::appendContextMenu(menu);
 	}

@@ -504,18 +504,18 @@ struct OrbitWidget : SubmitModuleWidget {
 		setModule(module);
 		auto* panel = createPanel(asset::plugin(pluginInstance, "res/Orbit.svg"));
 		setPanel(panel);
-		panel->panelBorder->hide();
+		// panel->panelBorder->hide();
 
 		// De 68.346 x 380 Illustrator-layout blijft 1:1 en wordt, net als
 		// Flip en Sync, gecentreerd in het 75 px brede 5HP-frame.
-		box.size.x = 75.f;
-		panel->box.pos.x = 3.327f;
-		auto* background = createWidget<OrbitPanelBackground>(Vec(0.f, 0.f));
-		background->box.size = Vec(75.f, RACK_GRID_HEIGHT);
-		addChildBottom(background);
-		auto* border = createWidget<OrbitPanelBorder>(Vec(0.f, 0.f));
-		border->box.size = Vec(75.f, RACK_GRID_HEIGHT);
-		addChild(border);
+		// box.size.x = 75.f;
+		// panel->box.pos.x = 3.327f;
+		// auto* background = createWidget<OrbitPanelBackground>(Vec(0.f, 0.f));
+		// background->box.size = Vec(75.f, RACK_GRID_HEIGHT);
+		// addChildBottom(background);
+		// auto* border = createWidget<OrbitPanelBorder>(Vec(0.f, 0.f));
+		// border->box.size = Vec(75.f, RACK_GRID_HEIGHT);
+		// addChild(border);
 
 		// Exacte 1:1-posities uit Panel-design-Orbit-components.svg, plus
 		// uitsluitend de 3.327 px horizontale centreerruimte.

@@ -703,27 +703,27 @@ struct Circles : Module {
 	}
 
 	void pushPendingDiceHistory() {
-		if (!diceHistoryReady.exchange(false, std::memory_order_acq_rel))
-			return;
+		// if (!diceHistoryReady.exchange(false, std::memory_order_acq_rel))
+		// 	return;
 
-		auto* action = new history::ComplexAction;
-		action->name = "generate Circles melody";
-		for (int i = 0; i < 8; ++i) {
-			const float oldValue = diceHistoryOldValues[i];
-			const float newValue = diceHistoryNewValues[i];
-			if (oldValue == newValue)
-				continue;
-			auto* change = new history::ParamChange;
-			change->moduleId = id;
-			change->paramId = STEP_1_PARAM + i;
-			change->oldValue = oldValue;
-			change->newValue = newValue;
-			action->push(change);
-		}
-		if (action->isEmpty())
-			delete action;
-		else
-			APP->history->push(action);
+		// auto* action = new history::ComplexAction;
+		// action->name = "generate Circles melody";
+		// for (int i = 0; i < 8; ++i) {
+		// 	const float oldValue = diceHistoryOldValues[i];
+		// 	const float newValue = diceHistoryNewValues[i];
+		// 	if (oldValue == newValue)
+		// 		continue;
+		// 	auto* change = new history::ParamChange;
+		// 	change->moduleId = id;
+		// 	change->paramId = STEP_1_PARAM + i;
+		// 	change->oldValue = oldValue;
+		// 	change->newValue = newValue;
+		// 	action->push(change);
+		// }
+		// if (action->isEmpty())
+		// 	delete action;
+		// else
+		// 	APP->history->push(action);
 	}
 
 	int getNoteSemitones(int step, int scaleIndex) {
@@ -969,7 +969,7 @@ constexpr std::array<Circles::Scale, 8> Circles::scales;
 struct CirclesDisplay : TransparentWidget {
 	Circles* module = nullptr;
 	std::shared_ptr<Font> font;
-	std::shared_ptr<Svg> lcdRingSvg;
+	std::shared_ptr<DynamicSvg> lcdRingSvg;
 	NSVGshape* lcdRingShape = nullptr;
 	std::vector<NSVGpath*> lcdLedPaths;
 	std::array<float, Circles::PARAMS_LEN> observedParams{};
@@ -1087,7 +1087,7 @@ struct CirclesDisplay : TransparentWidget {
 
 		// This SVG must be unique per widget because its NanoSVG path list is
 		// temporarily isolated below while the individual LEDs are drawn.
-		lcdRingSvg = std::make_shared<Svg>();
+		lcdRingSvg = std::make_shared<DynamicSvg>();
 		lcdRingSvg->loadFile(asset::plugin(pluginInstance, "res/CirclesComponents.svg"));
 		if (!lcdRingSvg->handle)
 			return;

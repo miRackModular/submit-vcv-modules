@@ -15,40 +15,40 @@ extern Plugin* pluginInstance;
 
 struct SubmitModuleWidget : ModuleWidget {
 	void appendSubmitLinks(Menu* menu, const std::string& manualUrl = SUBMIT_MANUAL_URL) {
-		menu->addChild(new MenuSeparator);
-		menu->addChild(createMenuItem("Manual", "", [manualUrl]() {
-			system::openBrowser(manualUrl);
-		}));
-		menu->addChild(createMenuItem("submitaudio.nl", "", []() {
-			system::openBrowser(SUBMIT_URL);
-		}));
-		menu->addChild(createMenuItem("Report a Bug", "", []() {
-			system::openBrowser(SUBMIT_BUG_URL);
-		}));
+		// menu->addChild(new MenuSeparator);
+		// menu->addChild(createMenuItem("Manual", "", [manualUrl]() {
+		// 	system::openBrowser(manualUrl);
+		// }));
+		// menu->addChild(createMenuItem("submitaudio.nl", "", []() {
+		// 	system::openBrowser(SUBMIT_URL);
+		// }));
+		// menu->addChild(createMenuItem("Report a Bug", "", []() {
+		// 	system::openBrowser(SUBMIT_BUG_URL);
+		// }));
 	}
 
 	void appendContextMenu(Menu* menu) override {
-		std::string changelogUrl = SUBMIT_CHANGELOG_URL;
-		if (model) {
-			const std::string slug = model->slug;
-			if (slug == "Drift" || slug == "Chrono" || slug == "Impact" ||
-				slug == "Chain" || slug == "Squeeze" || slug == "Shape" ||
-				slug == "Master" || slug == "Gain" || slug == "Sweep" ||
-				slug == "Loop" || slug == "Clang" || slug == "React" ||
-				slug == "Sync" || slug == "Flip" || slug == "Orbit" ||
-				slug == "SumM4" || slug == "SumS4" || slug == "Set" ||
-				slug == "Pulse" || slug == "Tag" ||
-				slug == "Circles" || slug == "Sub") {
-				changelogUrl = std::string(SUBMIT_CHANGELOG_BASE_URL) + slug + ".md";
-			}
-		}
-		menu->addChild(createMenuItem("Changelog", "", [changelogUrl]() {
-			system::openBrowser(changelogUrl);
-		}));
-		menu->addChild(new MenuSeparator);
-		menu->addChild(createMenuItem("Support Submit Audio", "", []() {
-			system::openBrowser(SUBMIT_SUPPORT_URL);
-		}));
+		// std::string changelogUrl = SUBMIT_CHANGELOG_URL;
+		// if (model) {
+		// 	const std::string slug = model->slug;
+		// 	if (slug == "Drift" || slug == "Chrono" || slug == "Impact" ||
+		// 		slug == "Chain" || slug == "Squeeze" || slug == "Shape" ||
+		// 		slug == "Master" || slug == "Gain" || slug == "Sweep" ||
+		// 		slug == "Loop" || slug == "Clang" || slug == "React" ||
+		// 		slug == "Sync" || slug == "Flip" || slug == "Orbit" ||
+		// 		slug == "SumM4" || slug == "SumS4" || slug == "Set" ||
+		// 		slug == "Pulse" || slug == "Tag" ||
+		// 		slug == "Circles" || slug == "Sub") {
+		// 		changelogUrl = std::string(SUBMIT_CHANGELOG_BASE_URL) + slug + ".md";
+		// 	}
+		// }
+		// menu->addChild(createMenuItem("Changelog", "", [changelogUrl]() {
+		// 	system::openBrowser(changelogUrl);
+		// }));
+		// menu->addChild(new MenuSeparator);
+		// menu->addChild(createMenuItem("Support Submit Audio", "", []() {
+		// 	system::openBrowser(SUBMIT_SUPPORT_URL);
+		// }));
 	}
 };
 
